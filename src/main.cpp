@@ -16,10 +16,10 @@ SDL_GLContext gOpenGLContext = nullptr;
 bool gQuit=false;
 
 //VAO
-GLuint gVertextArrayObject =0;
+GLuint gVertexArrayObject =0;
 
 //VBO
-GLuint gVertextBufferObject=0;
+GLuint gVertexBufferObject=0;
 
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
@@ -72,6 +72,12 @@ GLuint CreateShaderProgram(const std::string& vs,const std::string& fs)
     glValidateProgram(programObject);
 
     //glDetachShader,glDeleteShader
+    //一旦我们的program object 被创建以后，我们就可以detach and delete 我们的shader了
+    glDetachShader(programObject,myVertexShader);
+    glDetachShader(programObject,myFragmentShader);
+
+    glDeleteShader(myVertexShader);
+    glDeleteShader(myFragmentShader);
 
     return programObject;
 
@@ -96,7 +102,7 @@ void GetOpenGLVersionInfo()
 void VertexSpecification()
 {
     //Lives on the cpu
-    const std::vector<GLfloat> vertextPosition{
+    const std::vector<GLfloat> vertexPosition{
         // x       y      z
           -0.8f, -0.8f, 0.0f,  //vertex 1
            0.8f, -0.8f, 0.0f,  //vertex 2
@@ -105,13 +111,15 @@ void VertexSpecification()
 
     //We start setting things up
     //on the GPU
-    glGenVertexArrays(1,&gVertextArrayObject);
-    glBindVertexArray(gVertextArrayObject);
 
     //start generating our VBO
-    glGenBuffers(1,&gVertextBufferObject);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertextBufferObject);
-    glBufferData(GL_ARRAY_BUFFER,vertextPosition.size()*sizeof(GLfloat),vertextPosition.data(),GL_STATIC_DRAW);
+    glGenBuffers(1,&gVertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER,vertexPosition.size()*sizeof(GLfloat),vertexPosition.data(),GL_STATIC_DRAW);
+
+    //VAO things
+    glGenVertexArrays(1,&gVertexArrayObject);
+    glBindVertexArray(gVertexArrayObject);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
@@ -193,10 +201,13 @@ void PreDraw()
 }
 void Draw()
 {
-    glBindVertexArray(gVertextArrayObject);
-    glBindBuffer(GL_ARRAY_BUFFER,gVertextBufferObject);
+    glBindVertexArray(gVertexArrayObject);
+    glBindBuffer(GL_ARRAY_BUFFER,gVertexBufferObject);
 
     glDrawArrays(GL_TRIANGLES,0,3);
+
+    //not necessary if we only have one graphics pipeline
+    glUseProgram(0);
 }
 
 
@@ -223,15 +234,21 @@ void CleanUp()
 
 
 int main() {
+
+    //1. Setup the graphics program
     InitializeProgram();
 
+    //2. Setup our geometry
     VertexSpecification();
 
+    //3. Create our graphics pipeline
+    //  -At a minimum, this means ther vertex and fragment shader
     CreateGraphicsPipeline();
 
+    //4. Call the main application loop
     MainLoop();
 
-
+    //5. Call the cleanup function when our program terminates
     CleanUp();
 
     return 0;
