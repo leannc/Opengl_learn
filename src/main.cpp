@@ -308,7 +308,7 @@ void CleanUp()
 
 
 
-int main() {
+int main2() {
 
     //1. Setup the graphics program
     InitializeProgram();
