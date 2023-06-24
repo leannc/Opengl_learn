@@ -1,0 +1,4 @@
+unit vector：向量的模是1，使用normalize()，可以让向量的模变成1
+dot product： tells us how similar 2 vectors are
+
+cross product(A,B):  一个垂直于A,B两个的向量

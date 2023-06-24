@@ -25,7 +25,7 @@ glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
     return Projection * View * Model;
 }
 
-int main()
+int glm_main()
 {
     glm::vec3 A(1.0f,1.0f,1.1f);
     glm::vec3 B(0.5f,1.0f,0.7f);
