@@ -22,7 +22,6 @@ GLuint gVertexArrayObject =0;
 
 //VBO
 GLuint gVertexBufferObject=0;
-GLuint gVertexBufferObject2=0;
 
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
@@ -124,20 +123,15 @@ void GetOpenGLVersionInfo()
 void VertexSpecification()
 {
     //Lives on the cpu
-    const std::vector<GLfloat> vertexPosition{
+    const std::vector<GLfloat> vertexData{
         // x       y      z
-          -0.8f, -0.8f, 0.0f,  //vertex 1
-           0.8f, -0.8f, 0.0f,  //vertex 2
-           0.0f, 0.8f, 0.0f    //vertex 3
+          -0.8f, -0.8f, 0.0f,   //position 1
+          1.0f, 0.0f, 0.0f,     //color 1
+           0.8f, -0.8f, 0.0f,   //position 2
+          0.0f, 1.0f, 0.0f,     //color 2
+           0.0f, 0.8f, 0.0f,    //position 3
+            0.0f, 0.0f, 1.0f    //color 3
     };
-
-    const std::vector<GLfloat> vertexColors{
-            // r    g     b
-            1.0f, 0.0f, 0.0f,  //vertex 1
-            0.0f, 1.0f, 0.0f,  //vertex 2
-            0.0f, 0.0f, 1.0f    //vertex 3
-    };
-
 
 
     //We start setting things up
@@ -150,19 +144,15 @@ void VertexSpecification()
     //start generating our VBO
     glGenBuffers(1,&gVertexBufferObject);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER,vertexPosition.size()*sizeof(GL_FLOAT),vertexPosition.data(),GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,vertexData.size()*sizeof(GL_FLOAT),vertexData.data(),GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(void*)0);  //倒数第二个参数stride，指的是一整个帧周期的长度，在这里就是xyz+rgb，一个整属性的字节长度，所以这里要 GL_FLOAT*6
 
-    //set up our colors
-    glGenBuffers(1,&gVertexBufferObject2);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject2);
-    glBufferData(GL_ARRAY_BUFFER,vertexColors.size()*sizeof(GL_FLOAT),vertexColors.data(),GL_STATIC_DRAW);
 
     //linking up the attributes in our VAO
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(GLvoid*)(sizeof(GL_FLOAT)*3));
 
     //clean up
     glBindVertexArray(0);
