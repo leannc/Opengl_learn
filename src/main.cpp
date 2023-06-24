@@ -22,6 +22,7 @@ GLuint gVertexArrayObject =0;
 
 //VBO
 GLuint gVertexBufferObject=0;
+GLuint gVertexBufferObject2=0;
 
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
@@ -57,6 +58,20 @@ GLuint CompileShader(GLuint type, const std::string& source){
     const char* src=source.c_str();
     glShaderSource(shaderObject,1,&src,nullptr);
     glCompileShader(shaderObject);
+
+    // 检查编译状态
+    GLint compileStatus;
+    glGetShaderiv(shaderObject, GL_COMPILE_STATUS, &compileStatus);
+    if (compileStatus == GL_FALSE) {
+        // 获取编译错误信息
+        GLchar infoLog[1024];
+        glGetShaderInfoLog(shaderObject, 1024, NULL, infoLog);
+        std::cout << "Shader compilation error: " << infoLog << std::endl;
+
+        // 删除 GLSL 着色器程序对象
+        glDeleteShader(shaderObject);
+    }
+
 
     return shaderObject;
 }
@@ -116,24 +131,47 @@ void VertexSpecification()
            0.0f, 0.8f, 0.0f    //vertex 3
     };
 
+    const std::vector<GLfloat> vertexColors{
+            // r    g     b
+            1.0f, 0.0f, 0.0f,  //vertex 1
+            0.0f, 1.0f, 0.0f,  //vertex 2
+            0.0f, 0.0f, 1.0f    //vertex 3
+    };
+
+
+
     //We start setting things up
     //on the GPU
-
-    //start generating our VBO
-    glGenBuffers(1,&gVertexBufferObject);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER,vertexPosition.size()*sizeof(GLfloat),vertexPosition.data(),GL_STATIC_DRAW);
-
     //VAO things
     glGenVertexArrays(1,&gVertexArrayObject);
     glBindVertexArray(gVertexArrayObject);
 
+
+    //start generating our VBO
+    glGenBuffers(1,&gVertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER,vertexPosition.size()*sizeof(GL_FLOAT),vertexPosition.data(),GL_STATIC_DRAW);
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+
+    //set up our colors
+    glGenBuffers(1,&gVertexBufferObject2);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject2);
+    glBufferData(GL_ARRAY_BUFFER,vertexColors.size()*sizeof(GL_FLOAT),vertexColors.data(),GL_STATIC_DRAW);
+
+    //linking up the attributes in our VAO
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,(void*)0);
 
     //clean up
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+
+
+
+
 
 }
 
