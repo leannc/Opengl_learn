@@ -29,6 +29,30 @@ GLuint gIndexBufferObject=0;
 GLuint gGraphicsPipelineShaderProgram = 0;
 
 
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvv Error Handling Routines vvvvvvvvvvvvvvvvvvvv
+static void GLClearAllErrors()
+{
+    while (glGetError() != GL_NO_ERROR){
+
+    }
+}
+
+static bool GLCheckErrorStatus(const char* function,int line)
+{
+    while(GLenum error = glGetError()){
+        std::cout << "OpenGL Error:" <<error
+        <<"\tLine: "<<line
+        <<"\tfunction: "<<function<<std::endl;
+        return true;
+    }
+    return false;
+}
+
+
+#define GLCheck(x) GLClearAllErrors();x;GLCheckErrorStatus(#x,__LINE__)
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Error Handling Routines ^^^^^^^^^^^^^^^^^^^^
+
+
 std::string LoadShaderAsString(const std::string& filename)
 {
     std::string result="";
@@ -251,11 +275,11 @@ void Draw()
     glBindBuffer(GL_ARRAY_BUFFER,gVertexBufferObject);
 
 //    glDrawArrays(GL_TRIANGLES,0,6);
-    glDrawElements(GL_TRIANGLES,
+    GLCheck(glDrawElements(GL_TRIANGLES,
                    6,  //6个顶点
                    GL_UNSIGNED_INT,
                    0  //index之前没有东西
-                   );
+                   ));
 
     //not necessary if we only have one graphics pipeline
     glUseProgram(0);
