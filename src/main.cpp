@@ -22,6 +22,8 @@ GLuint gVertexArrayObject =0;
 
 //VBO
 GLuint gVertexBufferObject=0;
+GLuint gIndexBufferObject=0;
+
 
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
@@ -124,21 +126,18 @@ void VertexSpecification()
 {
     //Lives on the cpu
     const std::vector<GLfloat> vertexData{
-        //First Triangle 右手法则，逆时针是朝着屏幕外，屏幕外是z的正方向，
+          // 0 - Vertex
           -0.5f, -0.5f, 0.0f,  //position 1
           1.0f, 0.0f, 0.0f,    //color 1
+          // 1 - Vertex
           0.5f, -0.5f, 0.0f,   //position 2
           0.0f, 1.0f, 0.0f,    //color 2
+          // 2 - Vertex
           -0.5f, 0.5f, 0.0f,   //position 3
           0.0f, 0.0f, 1.0f,    //color 3
-
-          //Second Triangle 右手法则，逆时针是朝着屏幕外，屏幕外是z的正方向，
-          0.5f, -0.5f, 0.0f,  //position 1
-          0.0f, 1.0f, 0.0f,    //color 1
-          0.5f, 0.5f, 0.0f,   //position 2
-          0.0f, 1.0f, 0.0f,    //color 2
-          -0.5f, 0.5f, 0.0f,   //position 3
-          0.0f, 0.0f, 1.0f     //color 3
+          // 3 - Vertex
+          0.5f, 0.5f, 0.0f,   //position 4
+          0.0f, 1.0f, 0.0f,    //color 4
     };
 
 
@@ -153,6 +152,14 @@ void VertexSpecification()
     glGenBuffers(1,&gVertexBufferObject);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
     glBufferData(GL_ARRAY_BUFFER,vertexData.size()*sizeof(GL_FLOAT),vertexData.data(),GL_STATIC_DRAW);
+
+
+    const std::vector<GLuint> indexBufferData{2,0,1,3,2,1};
+    //Setup the index Buffer Object(IBO i.e EBO)
+    glGenBuffers(1,&gIndexBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndexBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,indexBufferData.size()*sizeof(GLuint),indexBufferData.data(),GL_STATIC_DRAW);
+
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(void*)0);  //倒数第二个参数stride，指的是一整个帧周期的长度，在这里就是xyz+rgb，一个整属性的字节长度，所以这里要 GL_FLOAT*6
@@ -243,7 +250,12 @@ void Draw()
     glBindVertexArray(gVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER,gVertexBufferObject);
 
-    glDrawArrays(GL_TRIANGLES,0,6);
+//    glDrawArrays(GL_TRIANGLES,0,6);
+    glDrawElements(GL_TRIANGLES,
+                   6,  //6个顶点
+                   GL_UNSIGNED_INT,
+                   0  //index之前没有东西
+                   );
 
     //not necessary if we only have one graphics pipeline
     glUseProgram(0);
