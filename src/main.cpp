@@ -124,13 +124,21 @@ void VertexSpecification()
 {
     //Lives on the cpu
     const std::vector<GLfloat> vertexData{
-        // x       y      z
-          -0.8f, -0.8f, 0.0f,   //position 1
-          1.0f, 0.0f, 0.0f,     //color 1
-           0.8f, -0.8f, 0.0f,   //position 2
-          0.0f, 1.0f, 0.0f,     //color 2
-           0.0f, 0.8f, 0.0f,    //position 3
-            0.0f, 0.0f, 1.0f    //color 3
+        //First Triangle 右手法则，逆时针是朝着屏幕外，屏幕外是z的正方向，
+          -0.5f, -0.5f, 0.0f,  //position 1
+          1.0f, 0.0f, 0.0f,    //color 1
+          0.5f, -0.5f, 0.0f,   //position 2
+          0.0f, 1.0f, 0.0f,    //color 2
+          -0.5f, 0.5f, 0.0f,   //position 3
+          0.0f, 0.0f, 1.0f,    //color 3
+
+          //Second Triangle 右手法则，逆时针是朝着屏幕外，屏幕外是z的正方向，
+          0.5f, -0.5f, 0.0f,  //position 1
+          0.0f, 1.0f, 0.0f,    //color 1
+          0.5f, 0.5f, 0.0f,   //position 2
+          0.0f, 1.0f, 0.0f,    //color 2
+          -0.5f, 0.5f, 0.0f,   //position 3
+          0.0f, 0.0f, 1.0f     //color 3
     };
 
 
@@ -158,10 +166,6 @@ void VertexSpecification()
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
-
-
-
-
 
 }
 
@@ -239,7 +243,7 @@ void Draw()
     glBindVertexArray(gVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER,gVertexBufferObject);
 
-    glDrawArrays(GL_TRIANGLES,0,3);
+    glDrawArrays(GL_TRIANGLES,0,6);
 
     //not necessary if we only have one graphics pipeline
     glUseProgram(0);
