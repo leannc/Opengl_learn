@@ -33,8 +33,10 @@ GLuint gIndexBufferObject=0;
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
 
-float g_uOffset = 0.0f;
+float g_uOffset = -2.0f;
 float g_uRotate = 0.0f;
+float g_uScale  = 0.5f;
+
 
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvv Error Handling Routines vvvvvvvvvvvvvvvvvvvv
@@ -297,8 +299,8 @@ void PreDraw()
 
     //Model transformation by translating our object into world space
     glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,g_uOffset));
-
-    model = glm::rotate(model,glm::radians(g_uRotate),glm::vec3(0.0f,1.0f,0.0f));
+    model           = glm::rotate(model,glm::radians(g_uRotate),glm::vec3(0.0f,1.0f,0.0f));
+    model           = glm::scale(model,glm::vec3(g_uScale,g_uScale,g_uScale));
 
     GLint u_ModelMatrixLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram,"u_ModelMatrix");
 
