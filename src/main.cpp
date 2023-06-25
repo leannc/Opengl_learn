@@ -287,7 +287,8 @@ void PreDraw()
 
     glUseProgram(gGraphicsPipelineShaderProgram);
 
-    glm::mat4 translate = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,g_uOffset,0.0f));
+    //Model transformation by translating our object into world space
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,g_uOffset));
 
     GLint u_ModelMatrixLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram,"u_ModelMatrix");
 
@@ -299,6 +300,26 @@ void PreDraw()
         std::cout <<"Could not find u_ModelMatrix,maybe a mispelling?"<<std::endl;
         exit(EXIT_FAILURE);
     }
+
+    //Projection matrix (in perspective)
+    glm::mat4 perspectiveProjection = glm::perspective(
+                glm::radians(45.0f),// fov:可以看到的视野范围
+                (float)gScreenWidth/(float)gScreenHeight,//尺寸比例
+                0.1f, //near : 最近的z
+                10.f //far: 最远的z
+            );
+
+    GLint u_ProjectionLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram,"u_Projection");
+
+    if(u_ProjectionLocation >=0)
+    {
+//      std::cout <<"location of u_Offset: "<<location<<std::endl;
+        glUniformMatrix4fv(u_ProjectionLocation,1,GL_FALSE,&perspectiveProjection[0][0]);
+    } else {
+        std::cout <<"Could not find u_Perspective,maybe a mispelling?"<<std::endl;
+        exit(EXIT_FAILURE);
+    }
+
 
 
 
