@@ -26,3 +26,5 @@ inverse matrix ： 可以从世界坐标系 返回为 local coordinate
 
 transformation matrices : translate, scale, rotate
 projection matrices : perspective
+
+投影顺序： local coordinate -> world coordinate -> view space(camera) -> projection  这是一整个显示链，可以看腾讯文档里面的笔记截图
