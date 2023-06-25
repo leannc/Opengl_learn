@@ -26,7 +26,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-int main() {
+int glm3_main() {
     glm::vec4 vertex(1.0f,5.0f,1.0f,1.0f); //最后一个1.0f，表示的是这个是一个点，如果是0.0f，表示这是一个向量
     std::cout<<"origin vertex\n"<<glm::to_string(vertex)<<'\n'<<std::endl;
 

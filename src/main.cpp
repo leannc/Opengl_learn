@@ -2,6 +2,10 @@
 
 #include <SDL.h>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+
 #include <vector>
 #include <string>
 #include <fstream>
@@ -27,6 +31,8 @@ GLuint gIndexBufferObject=0;
 
 //Program Object (for our shaders)
 GLuint gGraphicsPipelineShaderProgram = 0;
+
+float g_uOffset = 0.0;
 
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvv Error Handling Routines vvvvvvvvvvvvvvvvvvvv
@@ -186,12 +192,12 @@ void VertexSpecification()
 
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(void*)0);  //倒数第二个参数stride，指的是一整个帧周期的长度，在这里就是xyz+rgb，一个整属性的字节长度，所以这里要 GL_FLOAT*6
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(void*)0);  //倒数第二个参数stride，指的是一整个帧周期的长度，在这里就是xyz+rgb，一个整属性的字节长度，所以这里要 GL_FLOAT*6 ;
 
 
     //linking up the attributes in our VAO
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(GLvoid*)(sizeof(GL_FLOAT)*3));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(GLvoid*)(sizeof(GL_FLOAT)*3)); //最后一个参数，是指的在这一帧内，需要jump多少个byte，才能到所需信息段的开头，因为前面有xyz三个float，所以要GL_FLOAT*3，才能到rgb
 
     //clean up
     glBindVertexArray(0);
@@ -256,6 +262,17 @@ void Input()
         }
     }
 
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if(state[SDL_SCANCODE_UP]){
+        g_uOffset +=0.001f;
+        std::cout << "g_uOffset: "<<g_uOffset<<std::endl;
+    }
+    if(state[SDL_SCANCODE_DOWN]) {
+        g_uOffset -=0.001f;
+        std::cout << "g_uOffset: "<<g_uOffset<<std::endl;
+    }
+
+
 }
 void PreDraw()
 {
@@ -268,6 +285,17 @@ void PreDraw()
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glUseProgram(gGraphicsPipelineShaderProgram);
+    GLint location = glGetUniformLocation(gGraphicsPipelineShaderProgram,"u_Offset");
+    if(location >=0)
+    {
+//      std::cout <<"location of u_Offset: "<<location<<std::endl;
+        glUniform1f(location,g_uOffset);
+    } else {
+        std::cout <<"Could not find u_Offset,maybe a mispelling?"<<std::endl;
+    }
+
+
+
 }
 void Draw()
 {
@@ -308,7 +336,7 @@ void CleanUp()
 
 
 
-int main2() {
+int main() {
 
     //1. Setup the graphics program
     InitializeProgram();

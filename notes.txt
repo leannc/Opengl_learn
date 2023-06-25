@@ -9,3 +9,14 @@ glm::vec4 vertex(1.0f,5.0f,1.0f,1.0f); //最后一个1.0f，表示的是这个�
 //translate first, then rotate, then scale
 model = s*r*t;
 上面的意思是，变化矩阵是放在左边与目标点位进行矩阵乘，变化矩阵本身的执行顺序是从右到左，也就是说model=s*r*t表示的是先t(ranslate)，再r(otate)，最后s(cale)。
+
+glEnableVertexAttribArray(0);
+glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(void*)0);  //倒数第二个参数stride，指的是一整个帧周期的长度，在这里就是xyz+rgb，一个整属性的字节长度，所以这里要 GL_FLOAT*6 ;
+
+
+//linking up the attributes in our VAO
+glEnableVertexAttribArray(1);
+glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(GL_FLOAT)*6,(GLvoid*)(sizeof(GL_FLOAT)*3)); //最后一个参数，是指的在这一帧内，需要jump多少个byte，才能到所需信息段的开头，因为前面有xyz三个float，所以要GL_FLOAT*3，才能到rgb
+
+
+uniform variable: global variable on the GPU. shared in all shaders, it is a const. the value is passed from CPU to GPU
