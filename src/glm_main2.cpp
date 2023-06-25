@@ -26,7 +26,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-int main() {
+int glm2_main() {
     //Create vectors
     glm::vec3 A(3.0f,4.0f,0.0f);
     glm::vec3 B(0.0f,7.0f,0.0f);

@@ -12,7 +12,7 @@ set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(sub_module/glm)
 
 
-add_executable(${PROJECT_NAME} src/main.cpp src/glm_main.cpp src/glm_main2.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/glm_main.cpp src/glm_main2.cpp src/glm_main3.cpp)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC vendor/SDL2/include

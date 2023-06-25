@@ -2,3 +2,10 @@ unit vector：向量的模是1，使用normalize()，可以让向量的模变成
 dot product： tells us how similar 2 vectors are
 
 cross product(A,B):  一个垂直于A,B两个的向量
+
+glm::vec4 vertex(1.0f,5.0f,1.0f,1.0f); //最后一个1.0f，表示的是这个是一个点，如果是0.0f，表示这是一个向量
+
+
+//translate first, then rotate, then scale
+model = s*r*t;
+上面的意思是，变化矩阵是放在左边与目标点位进行矩阵乘，变化矩阵本身的执行顺序是从右到左，也就是说model=s*r*t表示的是先t(ranslate)，再r(otate)，最后s(cale)。
